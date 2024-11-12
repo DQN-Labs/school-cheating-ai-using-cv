@@ -51,14 +51,14 @@ val_datagen = ImageDataGenerator(rescale=1./255)  # Only rescaling for validatio
 train_generator = train_datagen.flow_from_directory(
     train_dir,
     target_size=img_size,  # Resize images to 224x224
-    batch_size=32,
+    batch_size=16,
     class_mode='categorical'  # For multi-class classification
 )
 
 val_generator = val_datagen.flow_from_directory(
     val_dir,
     target_size=img_size,
-    batch_size=32,
+    batch_size=16,
     class_mode='categorical'
 )
 
@@ -68,7 +68,7 @@ lr_scheduler = ReduceLROnPlateau(factor=0.1, patience=3, min_lr=1e-6)
 # Train the model
 history = model.fit(
     train_generator,
-    epochs=10,
+    epochs=25,
     steps_per_epoch=train_generator.samples // train_generator.batch_size,
     validation_data=val_generator,
     validation_steps=val_generator.samples // val_generator.batch_size,
@@ -89,7 +89,7 @@ model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-5),
 # Continue training for more epochs with fine-tuning
 history_fine_tune = model.fit(
     train_generator,
-    epochs=10,
+    epochs=25,
     steps_per_epoch=train_generator.samples // train_generator.batch_size,
     validation_data=val_generator,
     validation_steps=val_generator.samples // val_generator.batch_size
@@ -100,4 +100,4 @@ val_loss, val_accuracy = model.evaluate(val_generator)
 print(f'Validation Accuracy: {val_accuracy * 100:.2f}%')
 
 # Save the trained model
-model.save('image_classification_model.h5')
+model.save('version_0-8.h5')
